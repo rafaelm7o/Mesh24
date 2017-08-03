@@ -45,14 +45,18 @@ Mesh24's messages are 16-byte long (to make it encryption friendly).  9 out of t
 ## Dependencies
 
 - **RF24** - Arduino driver for nRF24L01/+  
-Testing is done against [this fork](https://github.com/j7only/RF24)  
+(https://github.com/nRF24/RF24)
 
 - **AESLib** - Arduino Library for AES Encryption  
-Testing is done against [this fork](https://github.com/j7only/AESLib)  
+(https://github.com/DavyLandman/AESLib) 
 
 - **Low-Power** - Low Power Library for Arduino  
 `Optional` - Needed for some of the examples only  
 Testing is done against [this fork](https://github.com/j7only/Low-Power)  
+
+### How to install dependencies?
+
+Take a look at https://www.arduino.cc/en/Guide/Libraries
 
 ## Installation
 
