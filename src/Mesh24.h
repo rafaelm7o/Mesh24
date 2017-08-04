@@ -36,7 +36,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class Mesh24 {
   public:
-    Mesh24(byte cePin, byte csPin): radio(cePin, csPin), channel(75), subnet(0xDEADBEAFUL), addr(1), heartbeatTimer(5 * 60 * 1000UL) {
+    Mesh24(byte cePin, byte csPin): radio(cePin, csPin), channel(75), subnet(0xDEADBEAFUL), addr(1){
       memset(encryptionKey, 0, sizeof(encryptionKey));
     }
 
@@ -69,10 +69,6 @@ class Mesh24 {
         memcpy(this->encryptionKey, encryptionKey, sizeof(this->encryptionKey));
       }
     }
-
-    Mesh24Timer& getHeartbeatTimer() {
-      return heartbeatTimer;
-    }
     
     void begin() {
       radio.begin();
@@ -85,7 +81,6 @@ class Mesh24 {
       radio.openReadingPipe(1, makeRadioAddress(addr));
       radio.startListening();
       radio.printDetails();
-      writeHeartbeat();
     }
     
     void loop() {
@@ -99,22 +94,6 @@ class Mesh24 {
 
     void write(Mesh24Message& message, bool secured = false) {
       return writeSecured(message, secured);
-    }
-
-    void writeHeartbeat() {
-      if (addr == 1) {
-        return;
-      }
-#ifdef MESH24_DEBUG
-      Serial.print(millis());
-      Serial.println(" Mesh24.writeHeartbeat()");
-#endif
-      Mesh24Message message(addr, 1, MESH24_MSG_HEARTBEAT);
-      message.writePayload(Mesh24Uptime.getSeconds());
-      message.writePayload(Mesh24Temperature.read());
-      message.writePayload(Mesh24Voltage.read());
-      addRandomPadding(message);
-      writeRouted(message);
     }
   
     void powerDown() {
@@ -170,9 +149,6 @@ class Mesh24 {
     }
     
     bool readRouted(Mesh24Message& message) {
-      if (heartbeatTimer.isDue()) {
-        writeHeartbeat();
-      }
       if (!readEncrypted(message)) {
         return false;
       }
@@ -325,7 +301,6 @@ class Mesh24 {
     Mesh24RouteMgr routeMgr;
     Mesh24SessionMgr sessionMgr;
     Mesh24MessageStore messageStore;
-    Mesh24Timer heartbeatTimer;
 };
   
 #endif
